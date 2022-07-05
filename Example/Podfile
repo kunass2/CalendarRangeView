@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+target 'CalendarRangeView_Example' do
+  pod 'CalendarRangeView', :path => '../'
+
+  target 'CalendarRangeView_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
