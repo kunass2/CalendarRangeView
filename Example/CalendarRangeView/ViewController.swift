@@ -7,18 +7,37 @@
 //
 
 import UIKit
+import SnapKit
+import CalendarRangeView
 
 class ViewController: UIViewController {
-
+    private var calendarView: CalendarView = {
+        let view = CalendarView()
+        view.headerBackgroundColor = .white
+        view.headerTitleColor = .red
+        view.previousButtonTitleColor = .blue
+        view.nextButtonTitleColor = .green
+        view.highlightColor = .orange
+        view.monthRange = 600
+        view.font = UIFont.systemFont(ofSize: 12)
+        return view
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        setupView()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    private func setupView() {
+        view.addSubview(calendarView)
+        calendarView.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(20)
+            maker.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            maker.height.equalTo(400)
+        }
+        let date = Date()
+        calendarView.maxDate = date.addingTimeInterval(24 * 60 * 60 * 50)
+        calendarView.startDate = date.addingTimeInterval(24 * 60 * 60 * 2)
+        calendarView.endDate = date.addingTimeInterval(24 * 60 * 60 * 8)
+        calendarView.reloadData()
     }
-
 }
-

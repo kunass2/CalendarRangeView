@@ -1,0 +1,6 @@
+framework module CalendarRangeView {
+  umbrella header "CalendarRangeView-umbrella.h"
+
+  export *
+  module * { export * }
+}
