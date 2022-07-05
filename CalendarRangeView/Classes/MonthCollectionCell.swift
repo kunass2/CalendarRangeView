@@ -138,7 +138,7 @@ extension MonthCollectionCell: UICollectionViewDelegateFlowLayout {
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
         let view = collectionView.dequeueReusableSupplementaryView(
-            ofKind: UICollectionElementKindSectionHeader,
+            ofKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: WeekHeaderView.nameOfClass,
             for: indexPath
         ) as! WeekHeaderView

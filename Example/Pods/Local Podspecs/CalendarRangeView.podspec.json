@@ -1,22 +1,29 @@
 {
   "name": "CalendarRangeView",
-  "version": "0.1.0",
-  "summary": "A short description of CalendarRangeView.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/Bartłomiej Semańczyk/CalendarRangeView",
+  "version": "1.0",
+  "summary": "Easily allow user to select range of dates in calendar.",
+  "description": "Looking for simple Swift library to select ranmge of dates? This one is for you:)",
+  "swift_versions": "5.0",
+  "homepage": "https://github.com/kunass2/CalendarRangeView",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "Bartłomiej Semańczyk": "bartekss2@icloud.com"
+    "kunass2": "bartekss2@icloud.com"
   },
   "source": {
-    "git": "https://github.com/Bartłomiej Semańczyk/CalendarRangeView.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/kunass2/CalendarRangeView.git",
+    "tag": "1.0"
   },
   "platforms": {
-    "ios": "10.0"
+    "ios": "11.0"
   },
-  "source_files": "CalendarRangeView/Classes/**/*"
+  "source_files": "CalendarRangeView/Classes/**/*",
+  "dependencies": {
+    "SnapKit": [
+
+    ]
+  },
+  "swift_version": "5.0"
 }

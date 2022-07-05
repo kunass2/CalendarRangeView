@@ -1,5 +1,6 @@
 PODS:
-  - CalendarRangeView (0.1.0)
+  - CalendarRangeView (1.0):
+    - SnapKit
   - SnapKit (5.6.0)
 
 DEPENDENCIES:
@@ -15,9 +16,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CalendarRangeView: 7f40e80dc829f88999f28e7c3d00364d8089f4c5
+  CalendarRangeView: be7b359527887a87c3a5ae379c8a86b46bb17658
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
 
-PODFILE CHECKSUM: 7426c3b2a9136203e6f303455b85d969f379c33b
+PODFILE CHECKSUM: ee31dbedfdaf53e245973a91b098b32dc258f740
 
 COCOAPODS: 1.10.1

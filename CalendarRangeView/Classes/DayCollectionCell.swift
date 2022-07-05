@@ -156,7 +156,7 @@ class DayCollectionCell: UICollectionViewCell {
         selectedView?.backgroundColor = todayHighlightColor
         selectedView?.layer.cornerRadius = height / 2
         self.addSubview(selectedView!)
-        self.sendSubview(toBack: selectedView!)
+        self.sendSubviewToBack(selectedView!)
         label.textColor = UIColor.white
     }
     
@@ -168,14 +168,14 @@ class DayCollectionCell: UICollectionViewCell {
         selectedView?.layer.cornerRadius = height / 2
         label.textColor = todayTextColor
         self.addSubview(selectedView!)
-        self.sendSubview(toBack: selectedView!)
+        self.sendSubviewToBack(selectedView!)
     }
     
     func highlightRight() {
         halfBackgroundView = UIView(frame: CGRect(x: width / 2, y: yHighlightPosition, width: width / 2, height: height*highlightScale))
         halfBackgroundView?.backgroundColor = highlightColor.withAlphaComponent(0.3)
         self.addSubview(halfBackgroundView!)
-        self.sendSubview(toBack: halfBackgroundView!)
+        self.sendSubviewToBack(halfBackgroundView!)
         addRoundHighlightView()
     }
     
@@ -183,7 +183,7 @@ class DayCollectionCell: UICollectionViewCell {
         halfBackgroundView = UIView(frame: CGRect(x: 0, y: yHighlightPosition, width: width / 2, height: height*highlightScale))
         halfBackgroundView?.backgroundColor = highlightColor.withAlphaComponent(0.3)
         self.addSubview(halfBackgroundView!)
-        self.sendSubview(toBack: halfBackgroundView!)
+        self.sendSubviewToBack(halfBackgroundView!)
         addRoundHighlightView()
     }
     
@@ -192,14 +192,14 @@ class DayCollectionCell: UICollectionViewCell {
         roundHighlightView?.backgroundColor = highlightColor.withAlphaComponent(1)
         roundHighlightView?.layer.cornerRadius = height / 2
         self.addSubview(roundHighlightView!)
-        self.sendSubview(toBack: roundHighlightView!)
+        self.sendSubviewToBack(roundHighlightView!)
     }
     
     func highlight() {
         roundHighlightView = UIView(frame: CGRect(x: 0, y: yHighlightPosition, width: width, height: height*highlightScale))
         roundHighlightView?.backgroundColor = highlightColor.withAlphaComponent(0.3)
         self.addSubview(roundHighlightView!)
-        self.sendSubview(toBack: roundHighlightView!)
+        self.sendSubviewToBack(roundHighlightView!)
     }
 
 }
