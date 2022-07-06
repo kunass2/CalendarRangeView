@@ -42,6 +42,10 @@ class MonthCollectionCell: UICollectionViewCell {
         WeekHeaderView.register(for: collectionView)
     }
     
+    func reloadData() {
+        collectionView.reloadData()
+    }
+    
     func setUserInterfaceProperties(highlightColor: UIColor,
                                     highlightScale: CGFloat,
                                     todayHighlightColor: UIColor,

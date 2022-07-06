@@ -127,10 +127,12 @@ class DayCollectionCell: UICollectionViewCell {
     }
     
     func highlightRange(startDate: Date, endDate: Date, date: Date){
-        if date >= startDate && date <= endDate && startDate != endDate {
-            if date.areSameDay(date: startDate) {
+        let reducedStartDate = startDate.reduced
+        let reducedEndDate = endDate.reduced
+        if date >= reducedStartDate && date <= reducedEndDate && reducedStartDate != reducedEndDate {
+            if date.areSameDay(date: reducedStartDate) {
                 self.highlightRight()
-            }else if date.areSameDay(date: endDate){
+            }else if date.areSameDay(date: reducedEndDate){
                 self.highlightLeft()
             }else{
                 self.highlight()

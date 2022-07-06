@@ -53,6 +53,9 @@ extension UIView{
 }
 
 extension Date {
+    var reduced: Date {
+        Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!
+    }
     
     func areSameDay(date: Date?) -> Bool {
         guard let date = date else { return false }

@@ -1,7 +1,10 @@
 import UIKit
+import SnapKit
+import RxSwift
+import RxCocoa
 
-public protocol CalendarViewDelegate: class {
-    func didSelectDate(startDate: Date , endDate : Date?)
+public protocol CalendarViewDelegate: AnyObject {
+    func didSelectDate(startDate: Date, endDate: Date?)
 }
 
 public final class CalendarViewFrameworkBundle {
@@ -16,7 +19,14 @@ public class CalendarView: UIView {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var nextButton: UIButton!
     @IBOutlet var previousButton: UIButton!
-    
+    private let disposeBag = DisposeBag()
+    private lazy var summaryButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.font = font.withSize(26)
+        button.setTitleColor(highlightColor, for: .normal)
+        return button
+    }()
+    public var summaryFormatter: DateFormatter?
     public weak var delegate: CalendarViewDelegate?
     private var calendarItemList = [CalendarLogic]()
     
@@ -63,6 +73,7 @@ public class CalendarView: UIView {
                 self.moveToSelectedDate(selectedDate: endDate,animated: true)
                 guard let start = startDate else { return }
                 self.delegate?.didSelectDate(startDate: start, endDate : endDate)
+                self.updateSummary()
             }
         }
     }
@@ -135,6 +146,7 @@ public class CalendarView: UIView {
     public var highlightColor: UIColor = UIColor(red: 11/255.0, green: 75/255.0, blue: 105/255.0, alpha: 1) {
         didSet {
             collectionView.layoutSubviews()
+            summaryButton.setTitleColor(highlightColor, for: .normal)
         }
     }
     
@@ -185,8 +197,20 @@ public class CalendarView: UIView {
     }
     
     func commonInit() {
+        summaryFormatter = DateFormatter()
+        summaryFormatter?.dateFormat = "dd MMM yyyy"
         CalendarViewFrameworkBundle.main.loadNibNamed(CalendarView.nameOfClass, owner: self, options: nil)
-        contentView.fixInView(self)
+        addSubview(contentView)
+        addSubview(summaryButton)
+        contentView.snp.makeConstraints { maker in
+            maker.leading.trailing.top.equalToSuperview()
+            maker.bottom.equalTo(summaryButton.snp.top).offset(-5)
+        }
+        summaryButton.snp.makeConstraints { maker in
+            maker.centerX.equalToSuperview()
+            maker.bottom.equalToSuperview()
+        }
+        setupActions()
     }
     
     public override func awakeFromNib() {
@@ -215,9 +239,18 @@ public class CalendarView: UIView {
         headerBackgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
     }
     
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        collectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+    func updateSummary() {
+        guard let startDate = startDate else {
+            summaryButton.setTitle(nil, for: .normal)
+            return
+        }
+        guard let endDate = endDate else {
+            summaryButton.setTitle(summaryFormatter?.string(from: startDate), for: .normal)
+            return
+        }
+        let start = summaryFormatter?.string(from: startDate) ?? ""
+        let end = summaryFormatter?.string(from: endDate) ?? ""
+        summaryButton.setTitle("\(start) - \(end)", for: .normal)
     }
     
     func calcuteDays(year: Int? = nil){
@@ -308,6 +341,15 @@ public class CalendarView: UIView {
         }
     }
     
+    // MARK: - Private
+    
+    private func setupActions() {
+        summaryButton.rx.tap.bind { [weak self] in
+            if let startDate = self?.startDate {
+                self?.moveToSelectedDate(selectedDate: startDate, animated: true)
+            }
+        }.disposed(by: disposeBag)
+    }
 }
 
 extension CalendarView: UICollectionViewDataSource {

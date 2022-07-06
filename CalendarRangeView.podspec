@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CalendarRangeView'
-  s.version          = '1.1'
+  s.version          = '1.2'
   s.summary          = 'Easily allow user to select range of dates in calendar.'
   s.description      = "Looking for simple Swift library to select ranmge of dates? This one is for you:)"
   s.swift_version    = '5.0'
@@ -27,4 +27,6 @@ Pod::Spec.new do |s|
   # }
 
   s.dependency 'SnapKit'
+  s.dependency 'RxSwift'
+  s.dependency 'RxCocoa'
 end
