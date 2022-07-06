@@ -12,14 +12,15 @@ import CalendarRangeView
 
 class ViewController: UIViewController {
     private var calendarView: CalendarView = {
-        let view = CalendarView()
+        let font = UIFont.systemFont(ofSize: 12)
+        let format = DateFormatter()
+        format.dateFormat = "dd MMM yyyy"
+        let view = CalendarView(tintColor: .orange, font: font, summaryFormat: format)
         view.headerBackgroundColor = .white
         view.headerTitleColor = .red
         view.previousButtonTitleColor = .blue
         view.nextButtonTitleColor = .green
-        view.highlightColor = .orange
         view.monthRange = 600
-        view.font = UIFont.systemFont(ofSize: 12)
         return view
     }()
     override func viewDidLoad() {

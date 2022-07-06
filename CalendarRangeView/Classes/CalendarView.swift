@@ -22,11 +22,11 @@ public class CalendarView: UIView {
     private let disposeBag = DisposeBag()
     private lazy var summaryButton: UIButton = {
         let button = UIButton()
-        button.titleLabel?.font = font.withSize(26)
+        button.titleLabel?.font = font.withSize(22)
         button.setTitleColor(highlightColor, for: .normal)
         return button
     }()
-    public var summaryFormatter: DateFormatter?
+    private let summaryFormatter: DateFormatter
     public weak var delegate: CalendarViewDelegate?
     private var calendarItemList = [CalendarLogic]()
     
@@ -62,7 +62,7 @@ public class CalendarView: UIView {
     public var startDate: Date? {
         didSet {
             DispatchQueue.main.async { [self] in
-                self.moveToSelectedDate(selectedDate: startDate,animated: true)
+                self.moveToSelectedDate(selectedDate: startDate,animated: false)
             }
         }
     }
@@ -70,7 +70,7 @@ public class CalendarView: UIView {
     public var endDate: Date? {
         didSet {
             DispatchQueue.main.async { [self] in
-                self.moveToSelectedDate(selectedDate: endDate,animated: true)
+                self.moveToSelectedDate(selectedDate: endDate,animated: false)
                 guard let start = startDate else { return }
                 self.delegate?.didSelectDate(startDate: start, endDate : endDate)
                 self.updateSummary()
@@ -143,12 +143,7 @@ public class CalendarView: UIView {
         }
     }
     
-    public var highlightColor: UIColor = UIColor(red: 11/255.0, green: 75/255.0, blue: 105/255.0, alpha: 1) {
-        didSet {
-            collectionView.layoutSubviews()
-            summaryButton.setTitleColor(highlightColor, for: .normal)
-        }
-    }
+    private let highlightColor: UIColor
     
     public var highlightScale: CGFloat = 0.8 {
         didSet {
@@ -174,43 +169,38 @@ public class CalendarView: UIView {
         }
     }
     
-    public var font: UIFont = UIFont.systemFont(ofSize: 16) {
-        didSet {
-            collectionView.layoutSubviews()
-        }
-    }
-        
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    private var font: UIFont = UIFont.systemFont(ofSize: 16)
+    
+    // MARK: - Initialization
+    
+    public init(tintColor: UIColor, font: UIFont, summaryFormat: DateFormatter) {
+        self.summaryFormatter = summaryFormat
+        self.highlightColor = tintColor
+        self.font = font
+        super.init(frame: .zero)
         commonInit()
         registerCell()
         setupUI()
         setupCollectionView()
+        setupActions()
     }
     
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
-        registerCell()
-        setupUI()
-        setupCollectionView()
+    required init?(coder: NSCoder) {
+        nil
     }
     
     func commonInit() {
-        summaryFormatter = DateFormatter()
-        summaryFormatter?.dateFormat = "dd MMM yyyy"
         CalendarViewFrameworkBundle.main.loadNibNamed(CalendarView.nameOfClass, owner: self, options: nil)
-        addSubview(contentView)
         addSubview(summaryButton)
-        contentView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.equalToSuperview()
-            maker.bottom.equalTo(summaryButton.snp.top).offset(-5)
-        }
         summaryButton.snp.makeConstraints { maker in
             maker.centerX.equalToSuperview()
-            maker.bottom.equalToSuperview()
+            maker.top.equalToSuperview()
         }
-        setupActions()
+        addSubview(contentView)
+        contentView.snp.makeConstraints { maker in
+            maker.leading.trailing.bottom.equalToSuperview()
+            maker.top.equalTo(summaryButton.snp.bottom).offset(5)
+        }
     }
     
     public override func awakeFromNib() {
@@ -245,11 +235,11 @@ public class CalendarView: UIView {
             return
         }
         guard let endDate = endDate else {
-            summaryButton.setTitle(summaryFormatter?.string(from: startDate), for: .normal)
+            summaryButton.setTitle(summaryFormatter.string(from: startDate), for: .normal)
             return
         }
-        let start = summaryFormatter?.string(from: startDate) ?? ""
-        let end = summaryFormatter?.string(from: endDate) ?? ""
+        let start = summaryFormatter.string(from: startDate)
+        let end = summaryFormatter.string(from: endDate)
         summaryButton.setTitle("\(start) - \(end)", for: .normal)
     }
     
@@ -365,15 +355,15 @@ extension CalendarView: UICollectionViewDataSource {
             for: indexPath) as! MonthCollectionCell
         cell.monthCellDelegate = self
         let calendarLogic = calendarItemList[indexPath.item]
-        cell.logic = calendarLogic
-        cell.maxDate = maxDate
-        cell.setStartAndEndDate(start: startDate, end: endDate)
         cell.setUserInterfaceProperties(highlightColor: highlightColor,
                                         highlightScale: highlightScale,
                                         todayHighlightColor: todayHighlightColor,
                                         todayTextColor: todayTextColor,
                                         dayTextColor: dayTextColor,
                                         dayFont: font)
+        cell.logic = calendarLogic
+        cell.maxDate = maxDate
+        cell.setStartAndEndDate(start: startDate, end: endDate)
         return cell
     }
 }

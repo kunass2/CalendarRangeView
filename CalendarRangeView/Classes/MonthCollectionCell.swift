@@ -1,6 +1,6 @@
 import UIKit
 
-protocol MonthCollectionCellDelegate: class {
+protocol MonthCollectionCellDelegate: AnyObject {
     func didSelect(startDate: Date? , endDate : Date?)
     func isStartOrEnd(date : Date) -> Bool
     func isBetweenStartAndEnd(date : Date) -> Bool

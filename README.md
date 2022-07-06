@@ -39,21 +39,21 @@ within **bridging header** file and avoid to import framework for every needed f
 ## Usage
 
 ```Swift
-    let calendarView: CalendarView = {
-        let view = CalendarView()
+    var calendarView: CalendarView = {
+        let font = UIFont.systemFont(ofSize: 12)
+        let format = DateFormatter()
+        format.dateFormat = "dd MMM yyyy"
+        let view = CalendarView(tintColor: .orange, font: font, summaryFormat: format)
         view.headerBackgroundColor = .white
-        view.headerTitleFont = UIFont.poppinsRegular.withSize(18)
-        view.headerTitleColor = .mineShaft
-        view.previousButtonTitleColor = .blueChill
-        view.nextButtonTitleColor = .blueChill
-        view.highlightColor = .blueChill
+        view.headerTitleColor = .red
+        view.previousButtonTitleColor = .blue
+        view.nextButtonTitleColor = .green
         view.monthRange = 600
-        view.font = .poppinsRegular
+        view.maxDate = date.addingTimeInterval(24 * 60 * 60 * 50)
         return view
     }()
 
     let date = Date()
-    calendarView.maxDate = date.addingTimeInterval(24 * 60 * 60 * 50)
     calendarView.startDate = date.addingTimeInterval(24 * 60 * 60 * 2)
     calendarView.endDate = date.addingTimeInterval(24 * 60 * 60 * 8)
     calendarView.reloadData()
