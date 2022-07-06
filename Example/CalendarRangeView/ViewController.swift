@@ -15,13 +15,7 @@ class ViewController: UIViewController {
         let font = UIFont.systemFont(ofSize: 12)
         let format = DateFormatter()
         format.dateFormat = "dd MMM yyyy"
-        let view = CalendarView(tintColor: .orange, font: font, summaryFormat: format)
-        view.headerBackgroundColor = .white
-        view.headerTitleColor = .red
-        view.previousButtonTitleColor = .blue
-        view.nextButtonTitleColor = .green
-        view.monthRange = 600
-        return view
+        return CalendarView(tintColor: .orange, font: font, summaryFormat: format, range: 600)
     }()
     override func viewDidLoad() {
         super.viewDidLoad()

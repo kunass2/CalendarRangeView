@@ -11,7 +11,7 @@ class CalendarLogic {
     
     private lazy var dateFormatter = DateFormatter()
     
-    var dateFormatterString = "MMM yyyy"
+    var dateFormatterString = "LLLL yyyy"
     
     var currentMonthAndYear: String {
         dateFormatter.dateFormat = dateFormatterString

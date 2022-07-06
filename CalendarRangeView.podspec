@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CalendarRangeView'
-  s.version          = '1.3'
+  s.version          = '1.4'
   s.summary          = 'Easily allow user to select range of dates in calendar.'
   s.description      = "Looking for simple Swift library to select ranmge of dates? This one is for you:)"
   s.swift_version    = '5.0'

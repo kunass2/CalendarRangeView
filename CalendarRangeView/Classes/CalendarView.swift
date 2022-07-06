@@ -33,14 +33,7 @@ public class CalendarView: UIView {
     public func reloadData() {
         collectionView.reloadData()
     }
-    
-    public var monthRange = 13 {
-        didSet {
-            calcuteDays()
-            updateHeader()
-            collectionView.reloadData()
-        }
-    }
+    private var monthRange: Int = 13
     public var maxDate: Date = Date() {
         didSet {
             calcuteDays()
@@ -78,71 +71,6 @@ public class CalendarView: UIView {
         }
     }
     
-    public var previousButtonIsEnable: Bool = true {
-        didSet {
-            self.previousButton.isEnabled = previousButtonIsEnable
-        }
-    }
-    
-    public var nextButtonIsEnable: Bool = true {
-        didSet {
-            self.nextButton.isEnabled = nextButtonIsEnable
-        }
-    }
-    
-    public var headerTitleColor: UIColor = .darkGray{
-        didSet {
-            monthYearLabel.textColor = headerTitleColor
-        }
-    }
-    
-    public var headerTitleFont: UIFont = UIFont.systemFont(ofSize: 18){
-        didSet {
-            monthYearLabel.font = headerTitleFont
-        }
-    }
-    
-    public var headerBackgroundColor: UIColor = UIColor.lightGray.withAlphaComponent(0.5){
-        didSet {
-            headerBgView.backgroundColor = headerBackgroundColor
-        }
-    }
-    
-    public var previousButtonTitleColor: UIColor = .darkGray{
-        didSet {
-            previousButton.setTitleColor(previousButtonTitleColor, for: .normal)
-        }
-    }
-    
-    public var previousButtonTitleFont: UIFont = UIFont.systemFont(ofSize: 20){
-        didSet {
-            previousButton.titleLabel?.font = previousButtonTitleFont
-        }
-    }
-    
-    public var previousButtonAligment: NSTextAlignment = .right{
-        didSet {
-            previousButton.titleLabel?.textAlignment = previousButtonAligment
-        }
-    }
-    
-    public var nextButtonTitleColor: UIColor = .darkGray{
-        didSet {
-            nextButton.setTitleColor(nextButtonTitleColor, for: .normal)
-        }
-    }
-    public var nextButtonTitleFont: UIFont = UIFont.systemFont(ofSize: 20){
-        didSet {
-            nextButton.titleLabel?.font = nextButtonTitleFont
-        }
-    }
-    
-    public var nextButtonAligment: NSTextAlignment = .left{
-        didSet {
-            previousButton.titleLabel?.textAlignment = nextButtonAligment
-        }
-    }
-    
     private let highlightColor: UIColor
     
     public var highlightScale: CGFloat = 0.8 {
@@ -173,10 +101,11 @@ public class CalendarView: UIView {
     
     // MARK: - Initialization
     
-    public init(tintColor: UIColor, font: UIFont, summaryFormat: DateFormatter) {
+    public init(tintColor: UIColor, font: UIFont, summaryFormat: DateFormatter, range: Int) {
         self.summaryFormatter = summaryFormat
         self.highlightColor = tintColor
         self.font = font
+        self.monthRange = range
         super.init(frame: .zero)
         commonInit()
         registerCell()
@@ -220,13 +149,8 @@ public class CalendarView: UIView {
     }
     
     func setupUI(){
-        nextButtonTitleColor = .darkGray
-        nextButtonTitleFont = UIFont.systemFont(ofSize: 20)
-        previousButtonTitleColor = .darkGray
-        previousButtonTitleFont = UIFont.systemFont(ofSize: 20)
-        headerTitleColor = .darkGray
-        headerTitleFont = UIFont.systemFont(ofSize: 18)
-        headerBackgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        nextButton.setTitleColor(highlightColor, for: .normal)
+        previousButton.setTitleColor(highlightColor, for: .normal)
     }
     
     func updateSummary() {
@@ -286,6 +210,7 @@ public class CalendarView: UIView {
             let logic = calendarItemList[pageNumber]
             monthYearLabel.text = logic.currentMonthAndYear
             monthYearLabel.font = font.withSize(20)
+            monthYearLabel.textColor = .black
         }
     }
     
