@@ -55,7 +55,7 @@ public class CalendarView: UIView {
     public var startDate: Date? {
         didSet {
             DispatchQueue.main.async { [self] in
-                self.moveToSelectedDate(selectedDate: startDate,animated: false)
+                self.moveToSelectedDate(selectedDate: startDate ?? Date(),animated: false)
             }
         }
     }
@@ -63,7 +63,7 @@ public class CalendarView: UIView {
     public var endDate: Date? {
         didSet {
             DispatchQueue.main.async { [self] in
-                self.moveToSelectedDate(selectedDate: endDate,animated: false)
+                self.moveToSelectedDate(selectedDate: endDate ?? Date(),animated: false)
                 guard let start = startDate else { return }
                 self.delegate?.didSelectDate(startDate: start, endDate : endDate)
                 self.updateSummary()

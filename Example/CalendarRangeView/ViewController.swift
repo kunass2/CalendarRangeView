@@ -31,8 +31,8 @@ class ViewController: UIViewController {
         }
         let date = Date()
         calendarView.maxDate = date.addingTimeInterval(24 * 60 * 60 * 50)
-        calendarView.startDate = date.addingTimeInterval(24 * 60 * 60 * 2)
-        calendarView.endDate = date.addingTimeInterval(24 * 60 * 60 * 8)
+        calendarView.startDate = date.addingTimeInterval(24 * 60 * 60 * 34)
+        calendarView.endDate = date.addingTimeInterval(24 * 60 * 60 * 39)
         calendarView.reloadData()
     }
 }
