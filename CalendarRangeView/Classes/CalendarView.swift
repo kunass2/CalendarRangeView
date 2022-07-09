@@ -4,7 +4,7 @@ import RxSwift
 import RxCocoa
 
 public protocol CalendarViewDelegate: AnyObject {
-    func didSelectDate(startDate: Date, endDate: Date?)
+    func didSelectDate(startDate: Date, endDate: Date)
 }
 
 public final class CalendarViewFrameworkBundle {
@@ -33,8 +33,8 @@ public class CalendarView: UIView {
     public func reloadData() {
         collectionView.reloadData()
     }
-    private var monthRange: Int = 13
-    public var maxDate: Date = Date() {
+    private var monthRange: Int = 600
+    private var maxDate: Date = Date().addingTimeInterval(24 * 60 * 60 * 500) {
         didSet {
             calcuteDays()
             updateHeader()
@@ -52,21 +52,14 @@ public class CalendarView: UIView {
         }
     }
     
-    public var startDate: Date? {
-        didSet {
-            DispatchQueue.main.async { [self] in
-                self.moveToSelectedDate(selectedDate: startDate ?? Date(),animated: false)
-            }
-        }
-    }
+    private var startDate: Date?
     
-    public var endDate: Date? {
+    private var endDate: Date? {
         didSet {
             DispatchQueue.main.async { [self] in
-                self.moveToSelectedDate(selectedDate: endDate ?? Date(),animated: false)
-                guard let start = startDate else { return }
-                self.delegate?.didSelectDate(startDate: start, endDate : endDate)
                 self.updateSummary()
+                guard let start = startDate, let endDate = endDate else { return }
+                self.delegate?.didSelectDate(startDate: start, endDate : endDate)
             }
         }
     }
@@ -101,11 +94,10 @@ public class CalendarView: UIView {
     
     // MARK: - Initialization
     
-    public init(tintColor: UIColor, font: UIFont, summaryFormat: DateFormatter, range: Int) {
+    public init(tintColor: UIColor, font: UIFont, summaryFormat: DateFormatter) {
         self.summaryFormatter = summaryFormat
         self.highlightColor = tintColor
         self.font = font
-        self.monthRange = range
         super.init(frame: .zero)
         commonInit()
         registerCell()
@@ -129,6 +121,15 @@ public class CalendarView: UIView {
         contentView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalToSuperview()
             maker.top.equalTo(summaryButton.snp.bottom).offset(5)
+        }
+        setup(startDate: nil, endDate: nil)
+    }
+    
+    public func setup(startDate: Date?, endDate: Date?) {
+        self.startDate = startDate
+        self.endDate = endDate
+        DispatchQueue.main.async { [self] in
+            self.moveToSelectedDate(selectedDate: startDate ?? Date(), animated: false)
         }
     }
     
@@ -321,8 +322,8 @@ extension CalendarView : MonthCollectionCellDelegate {
     }
 
     func didSelect(startDate: Date?, endDate: Date?) {
-        self.startDate = startDate ?? nil
-        self.endDate = endDate ?? nil
+        self.startDate = startDate
+        self.endDate = endDate
         collectionView.reloadData()
     }
     

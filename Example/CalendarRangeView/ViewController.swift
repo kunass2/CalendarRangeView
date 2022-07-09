@@ -15,7 +15,7 @@ class ViewController: UIViewController {
         let font = UIFont.systemFont(ofSize: 12)
         let format = DateFormatter()
         format.dateFormat = "dd MMM yyyy"
-        return CalendarView(tintColor: .orange, font: font, summaryFormat: format, range: 600)
+        return CalendarView(tintColor: .orange, font: font, summaryFormat: format)
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,9 +30,6 @@ class ViewController: UIViewController {
             maker.height.equalTo(400)
         }
         let date = Date()
-        calendarView.maxDate = date.addingTimeInterval(24 * 60 * 60 * 50)
-        calendarView.startDate = date.addingTimeInterval(24 * 60 * 60 * 34)
-        calendarView.endDate = date.addingTimeInterval(24 * 60 * 60 * 39)
-        calendarView.reloadData()
+        calendarView.setup(startDate: date.addingTimeInterval(24 * 60 * 60 * 14), endDate: date.addingTimeInterval(24 * 60 * 60 * 39))
     }
 }
