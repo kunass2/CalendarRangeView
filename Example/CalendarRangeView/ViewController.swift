@@ -31,5 +31,6 @@ class ViewController: UIViewController {
         }
         let date = Date()
         calendarView.setup(startDate: date.addingTimeInterval(24 * 60 * 60 * 14), endDate: date.addingTimeInterval(24 * 60 * 60 * 39))
+//        calendarView.setup(startDate: nil, endDate: nil)
     }
 }

@@ -34,35 +34,10 @@ public class CalendarView: UIView {
         collectionView.reloadData()
     }
     private var monthRange: Int = 600
-    private var maxDate: Date = Date().addingTimeInterval(24 * 60 * 60 * 500) {
-        didSet {
-            calcuteDays()
-            updateHeader()
-            collectionView.reloadData()
-        }
-    }
-    
-    public var selectedYear: Int = Date().year{
-        didSet {
-            let date = Date.from(year: selectedYear, month: 1, day: 1)
-            setStartAndEnd(date: date)
-            calcuteDays(year: selectedYear)
-            updateHeader()
-            collectionView.reloadData()
-        }
-    }
+    private var maxDate: Date = Date().addingTimeInterval(24 * 60 * 60 * 500)
     
     private var startDate: Date?
-    
-    private var endDate: Date? {
-        didSet {
-            DispatchQueue.main.async { [self] in
-                self.updateSummary()
-                guard let start = startDate, let endDate = endDate else { return }
-                self.delegate?.didSelectDate(startDate: start, endDate : endDate)
-            }
-        }
-    }
+    private var endDate: Date?
     
     private let highlightColor: UIColor
     
@@ -99,10 +74,7 @@ public class CalendarView: UIView {
         self.highlightColor = tintColor
         self.font = font
         super.init(frame: .zero)
-        commonInit()
-        registerCell()
-        setupUI()
-        setupCollectionView()
+        setupView()
         setupActions()
     }
     
@@ -110,7 +82,18 @@ public class CalendarView: UIView {
         nil
     }
     
-    func commonInit() {
+    private var didLayoutOnce = false
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        if !didLayoutOnce {
+            didLayoutOnce = true
+            setup(startDate: startDate, endDate: endDate, callDelegate: false, move: true)
+        }
+    }
+    
+    // MARK: - Internal
+    
+    func setupView() {
         CalendarViewFrameworkBundle.main.loadNibNamed(CalendarView.nameOfClass, owner: self, options: nil)
         addSubview(summaryButton)
         summaryButton.snp.makeConstraints { maker in
@@ -122,36 +105,33 @@ public class CalendarView: UIView {
             maker.leading.trailing.bottom.equalToSuperview()
             maker.top.equalTo(summaryButton.snp.bottom).offset(5)
         }
-        setup(startDate: nil, endDate: nil)
+        MonthCollectionCell.register(for: collectionView)
+        nextButton.setTitleColor(highlightColor, for: .normal)
+        previousButton.setTitleColor(highlightColor, for: .normal)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        calcuteDays()
+        setup(startDate: Date(), endDate: Date())
     }
     
     public func setup(startDate: Date?, endDate: Date?) {
+        setup(startDate: startDate, endDate: endDate, callDelegate: false, move: true)
+    }
+    
+    private func setup(startDate: Date?, endDate: Date?, callDelegate: Bool, move: Bool) {
         self.startDate = startDate
         self.endDate = endDate
         DispatchQueue.main.async { [self] in
-            self.moveToSelectedDate(selectedDate: startDate ?? Date(), animated: false)
+            self.updateSummary()
+            self.collectionView.reloadData()
+            if move {
+                self.moveToSelectedDate(selectedDate: startDate ?? Date(), animated: false)
+            }
+            guard let start = startDate, let endDate = endDate, callDelegate else {
+                return
+            }
+            self.delegate?.didSelectDate(startDate: start, endDate : endDate)
         }
-    }
-    
-    public override func awakeFromNib() {
-        registerCell()
-        setupUI()
-        setupCollectionView()
-    }
-    
-    func registerCell(){
-        MonthCollectionCell.register(for: collectionView)
-        selectedYear = Date().year
-    }
-    
-    func setupCollectionView(){
-        collectionView.dataSource = self
-        collectionView.delegate = self
-    }
-    
-    func setupUI(){
-        nextButton.setTitleColor(highlightColor, for: .normal)
-        previousButton.setTitleColor(highlightColor, for: .normal)
     }
     
     func updateSummary() {
@@ -168,14 +148,9 @@ public class CalendarView: UIView {
         summaryButton.setTitle("\(start) - \(end)", for: .normal)
     }
     
-    func calcuteDays(year: Int? = nil){
+    func calcuteDays(){
         calendarItemList = [CalendarLogic]()
-        var date : Date = maxDate
-        if let year = year {
-            date = Date.from(year: year, month: 1, day: 1)
-        }
-        self.startDate = date
-        self.endDate = date
+        var date: Date = maxDate
         var dateIter1 = date
         var dateIter2 = date
         
@@ -194,11 +169,6 @@ public class CalendarView: UIView {
             }
         }
         calendarItemList = Array(set).sorted(by: <)
-    }
-    
-    func setStartAndEnd(date: Date?){
-        startDate = date
-        endDate = date
     }
     
     func updateHeader() {
@@ -313,18 +283,8 @@ extension CalendarView: UIScrollViewDelegate {
 }
 
 extension CalendarView : MonthCollectionCellDelegate {
-    func startSelectedDate() -> Date? {
-        return startDate
-    }
-    
-    func endSelectedDate() -> Date? {
-        return endDate
-    }
-
     func didSelect(startDate: Date?, endDate: Date?) {
-        self.startDate = startDate
-        self.endDate = endDate
-        collectionView.reloadData()
+        setup(startDate: startDate, endDate: endDate, callDelegate: true, move: false)
     }
     
     func isStartOrEnd(date: Date) -> Bool {
